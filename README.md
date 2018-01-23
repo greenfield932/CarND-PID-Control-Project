@@ -34,7 +34,7 @@ Without proper multiplier tau_i for this component steering unable to compensate
 "D" component in a PID controller is responsible for correction of the steering and proportional to the difference of cross track error over two sequential updates divided by the time interval between updates. It helps to compensate oscillations introduced by P component. Visually the greater tau_d the smoother and slow response to a cross track error.
 Too high values of tau_d may result to overshooting because tau_p does not introduce enough correction.
 
-![alt text][image5]
+![alt text][image4]
 
 To find appropriate values of the PID controller coefficients I changed these values by multipling them x10 or x0.1 repeatedly starting from 1 until I got correct behaviour.
 First I tuned multipliers for P and D terms. And next I tuned tau_i.
