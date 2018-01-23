@@ -38,7 +38,7 @@ Too high values of tau_d may result to overshooting because tau_p does not intro
 
 To find appropriate values of the PID controller coefficients I changed these values by multipling them x10 or x0.1 repeatedly starting from 1 until I got correct behaviour.
 First I tuned multipliers for P and D terms. And next I tuned tau_i.
-Throttle value controlled by a cross track value propotionally, the higher error the lower the throttle.
+Throttle value is controlled by a cross track error propotionally, the higher error the lower the throttle.
 
 Here's a [link to my video result for speed limited version](./drive_40_mph.mp4) and [speed unlimited version with proportional breaks](./drive_max.mp4)
 ---
