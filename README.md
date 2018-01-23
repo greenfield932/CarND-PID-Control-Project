@@ -8,7 +8,7 @@ This projects implements PID controller for steering control of a car over track
 [image2]: ./tau_p_high.gif
 [image3]: ./tau_p_low.gif
 [image4]: ./tau_d_high.gif
-[image5]: ./tau_i_low.gif
+[image5]: ./tau_i.gif
 
 The PID controller implements the following formula:
 
@@ -29,7 +29,7 @@ And too low values may result to late correction.
 "I" component in a PID controller is responsible for bias compensations which in reality may mean actuation delay time or errors in angles of the wheels setup.
 Without proper multiplier tau_i for this component steering unable to compensate systematic errors, as result the correct position is shifted by a bias.
 
-![alt text][image4]
+![alt text][image5]
 
 "D" component in a PID controller is responsible for correction of the steering and proportional to the difference of cross track error over two sequential updates divided by the time interval between updates. It helps to compensate oscillations introduced by P component. Visually the greater tau_d the smoother and slow response to a cross track error.
 Too high values of tau_d may result to overshooting because tau_p does not introduce enough correction.
