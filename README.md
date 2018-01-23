@@ -16,7 +16,7 @@ The PID controller implements the following formula:
 
 "P" component in a PID controller means proportional control, in our case - proportional response of the steering angle to the cross track error.
 The greater the error the greater steering correction and vice versa.
-The tau coefficient is responsible for the contribution of proportional correction in the total steering.
+The tau_p coefficient is responsible for the contribution of proportional correction in the total steering.
 Visually the greater tau_p the faster response of the controller to the cross track erorr.
 When tau_p multiplier is too high, steering may result to oscillations with increasing of amplitude.
 
