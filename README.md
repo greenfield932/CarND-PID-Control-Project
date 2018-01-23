@@ -41,7 +41,7 @@ First I tuned multipliers for P and D terms. And next I tuned tau_i.
 Throttle value is controlled by a cross track error propotionally, the higher error the lower the throttle.
 
 Here's a [link to my video result for speed limited version](./drive_40_mph.mp4) and [speed unlimited version with proportional breaks](./drive_max.mp4)
----
+
 
 ## Dependencies
 
