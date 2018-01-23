@@ -32,10 +32,15 @@ int main()
 {
   uWS::Hub h;
 
-  PID pid;
   // TODO: Initialize the pid variable.
+  PID pid;
+  pid.Init(0.001, 0.00001, 0.001);
 
-  h.onMessage([&pid](uWS::WebSocket<uWS::SERVER> ws, char *data, size_t length, uWS::OpCode opCode) {
+
+  std::chrono::steady_clock::time_point start, end;
+  start = std::chrono::steady_clock::now();
+
+  h.onMessage([&pid, &start, &end](uWS::WebSocket<uWS::SERVER> ws, char *data, size_t length, uWS::OpCode opCode) {
     // "42" at the start of the message means there's a websocket message event.
     // The 4 signifies a websocket message
     // The 2 signifies a websocket event
@@ -51,19 +56,64 @@ int main()
           double speed = std::stod(j[1]["speed"].get<std::string>());
           double angle = std::stod(j[1]["steering_angle"].get<std::string>());
           double steer_value;
+
           /*
           * TODO: Calcuate steering value here, remember the steering value is
           * [-1, 1].
           * NOTE: Feel free to play around with the throttle and speed. Maybe use
           * another PID controller to control the speed!
-          */
-          
+          */         
+          //Measure update time and use it in the PID controller to make sure we do not depend on timings
+          end = std::chrono::steady_clock::now();
+          double dt = std::chrono::duration<double>(end - start).count();
+          start = end;
+          std::cout<<"dt:"<<dt<<std::endl;
+
+          double diff_cte = cte - pid.CTE();
+          pid.UpdateError(cte);
+
+          //calculate max possible steering, let's assume we do not exceed 10 units cte,
+          //diff_cte divided by dt not exceed 2, and take total error value
+          double norm = fabs(pid.Kp * 10 + pid.Kd*2 + pid.Ki * fabs(pid.TotalError()));
+
+          //apply PID formula
+          steer_value = -pid.Kp * cte - pid.Kd * diff_cte/dt - pid.Ki * pid.TotalError();
+
+          //normalize steering to -1...1
+          steer_value = steer_value/norm;
+
           // DEBUG
-          std::cout << "CTE: " << cte << " Steering Value: " << steer_value << std::endl;
+          std::cout << "CTE: " << cte << " Steering Value: " << steer_value <<" diff:"<<diff_cte<< std::endl;
+
+          //correct steering if we out of range
+          if(steer_value > 1.){
+            steer_value = 1.;
+          }
+          else if(steer_value < -1.){
+            steer_value = -1.;
+          }
 
           json msgJson;
           msgJson["steering_angle"] = steer_value;
-          msgJson["throttle"] = 0.3;
+
+
+          //set throttle proportional to 1/cte, the greater error the lower speed
+          msgJson["throttle"] = fabs(1./cte);
+
+          //1. example with speed limit
+          /*if(speed<40)
+                msgJson["throttle"] = fabs(1./cte);
+          else
+              msgJson["throttle"] = 0;
+*/
+
+          //2. max speed example
+          //use break on speeds over 50 and
+          //if cte is high enough (likely we are on a turn, so cte increase fast)
+          if(speed > 50 && fabs(cte) > 1){
+            msgJson["throttle"] =-fabs(1./cte);
+          }
+
           auto msg = "42[\"steer\"," + msgJson.dump() + "]";
           std::cout << msg << std::endl;
           ws.send(msg.data(), msg.length(), uWS::OpCode::TEXT);

@@ -1,6 +1,46 @@
 # CarND-Controls-PID
-Self-Driving Car Engineer Nanodegree Program
 
+This projects implements PID controller for steering control of a car over track in the simulator.
+
+## Description
+
+[image1]: ./formula.png
+[image2]: ./tau_p_high.gif
+[image3]: ./tau_p_low.gif
+[image4]: ./tau_d_high.gif
+[image5]: ./tau_i_low.gif
+
+The PID controller implements the following formula:
+
+![alt text][image1]
+
+"P" component in a PID controller means proportional control, in our case - proportional response of the steering angle to the cross track error.
+The greater the error the greater steering correction and vice versa.
+The tau coefficient is responsible for the contribution of proportional correction in the total steering.
+Visually the greater tau_p the faster response of the controller to the cross track erorr.
+When tau_p multiplier is too high, steering may result to oscillations with increasing of amplitude.
+
+![alt text][image2]
+
+And too low values may result to late correction.
+
+![alt text][image3]
+
+"I" component in a PID controller is responsible for bias compensations which in reality may mean actuation delay time or errors in angles of the wheels setup.
+Without proper multiplier tau_i for this component steering unable to compensate systematic errors, as result the correct position is shifted by a bias.
+
+![alt text][image4]
+
+"D" component in a PID controller is responsible for correction of the steering and proportional to the difference of cross track error over two sequential updates divided by the time interval between updates. It helps to compensate oscillations introduced by P component. Visually the greater tau_d the smoother and slow response to a cross track error.
+Too high values of tau_d may result to overshooting because tau_p does not introduce enough correction.
+
+![alt text][image5]
+
+To find appropriate values of the PID controller coefficients I changed these values by multipling them x10 or x0.1 repeatedly starting from 1 until I got correct behaviour.
+First I tuned multipliers for P and D terms. And next I tuned tau_i.
+Throttle value controlled by a cross track value propotionally, the higher error the lower the throttle.
+
+Here's a [link to my video result for speed limited version](./drive_40_mph.mp4) and [speed unlimited version with proportional breaks](./drive_max.mp4)
 ---
 
 ## Dependencies
@@ -36,63 +76,4 @@ There's an experimental patch for windows in this [PR](https://github.com/udacit
 4. Run it: `./pid`. 
 
 Tips for setting up your environment can be found [here](https://classroom.udacity.com/nanodegrees/nd013/parts/40f38239-66b6-46ec-ae68-03afd8a601c8/modules/0949fca6-b379-42af-a919-ee50aa304e6a/lessons/f758c44c-5e40-4e01-93b5-1a82aa4e044f/concepts/23d376c7-0195-4276-bdf0-e02f1f3c665d)
-
-## Editor Settings
-
-We've purposefully kept editor configuration files out of this repo in order to
-keep it as simple and environment agnostic as possible. However, we recommend
-using the following settings:
-
-* indent using spaces
-* set tab width to 2 spaces (keeps the matrices in source code aligned)
-
-## Code Style
-
-Please (do your best to) stick to [Google's C++ style guide](https://google.github.io/styleguide/cppguide.html).
-
-## Project Instructions and Rubric
-
-Note: regardless of the changes you make, your project must be buildable using
-cmake and make!
-
-More information is only accessible by people who are already enrolled in Term 2
-of CarND. If you are enrolled, see [the project page](https://classroom.udacity.com/nanodegrees/nd013/parts/40f38239-66b6-46ec-ae68-03afd8a601c8/modules/f1820894-8322-4bb3-81aa-b26b3c6dcbaf/lessons/e8235395-22dd-4b87-88e0-d108c5e5bbf4/concepts/6a4d8d42-6a04-4aa6-b284-1697c0fd6562)
-for instructions and the project rubric.
-
-## Hints!
-
-* You don't have to follow this directory structure, but if you do, your work
-  will span all of the .cpp files here. Keep an eye out for TODOs.
-
-## Call for IDE Profiles Pull Requests
-
-Help your fellow students!
-
-We decided to create Makefiles with cmake to keep this project as platform
-agnostic as possible. Similarly, we omitted IDE profiles in order to we ensure
-that students don't feel pressured to use one IDE or another.
-
-However! I'd love to help people get up and running with their IDEs of choice.
-If you've created a profile for an IDE that you think other students would
-appreciate, we'd love to have you add the requisite profile files and
-instructions to ide_profiles/. For example if you wanted to add a VS Code
-profile, you'd add:
-
-* /ide_profiles/vscode/.vscode
-* /ide_profiles/vscode/README.md
-
-The README should explain what the profile does, how to take advantage of it,
-and how to install it.
-
-Frankly, I've never been involved in a project with multiple IDE profiles
-before. I believe the best way to handle this would be to keep them out of the
-repo root to avoid clutter. My expectation is that most profiles will include
-instructions to copy files to a new location to get picked up by the IDE, but
-that's just a guess.
-
-One last note here: regardless of the IDE used, every submitted project must
-still be compilable with cmake and make./
-
-## How to write a README
-A well written README file can enhance your project and portfolio.  Develop your abilities to create professional README files by completing [this free course](https://www.udacity.com/course/writing-readmes--ud777).
 
